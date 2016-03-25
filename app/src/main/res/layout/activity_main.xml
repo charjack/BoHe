@@ -1,0 +1,82 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:id="@+id/root_view">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:background="@color/green">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="薄荷家居"
+            android:textColor="@android:color/white"
+            android:textSize="25sp" />
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/fragment_main_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        tools:context=".MainActivity"
+        android:background="#ffeeeeee"
+        android:layout_above = "@+id/radio_group"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#ccffffff"
+        android:padding="10dp"
+        style = "@style/footerRbStyle"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/radio_group">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="首页"
+            android:drawableTop="@drawable/home_selector"
+            android:id="@+id/radio_home"
+            style = "@style/footerRbStyle"
+            />
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/select_selector"
+            android:checked="false"
+            android:id="@+id/radio_select"
+            style = "@style/footerRbStyle"
+            android:text="单品"
+            />
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:drawableTop="@drawable/category_selector"
+            android:id="@+id/radio_category"
+            style = "@style/footerRbStyle"
+            android:text="分类"
+            />
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:drawableTop="@drawable/profile_selector"
+            android:id="@+id/radio_me"
+            style = "@style/footerRbStyle"
+            android:text="我"
+            />
+    </RadioGroup>
+
+</RelativeLayout>
