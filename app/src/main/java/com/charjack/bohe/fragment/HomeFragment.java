@@ -162,12 +162,32 @@ public class HomeFragment extends LazyFragment {
 
         @Override
         public Fragment getFragmentForPage(int position) {
-            SecondLayerFragment mainFragment = new SecondLayerFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(SecondLayerFragment.INTENT_STRING_TABNAME, tabnames.get(position));
-            bundle.putInt(SecondLayerFragment.INTENT_INT_POSITION, position);
-            mainFragment.setArguments(bundle);
-            return mainFragment;
+            System.out.println("position--------"+position);
+            //针对不同内部fragment创建不同的fragment
+            if(position ==0) {
+                SecondLayerFragment mainFragment = new SecondLayerFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(SecondLayerFragment.INTENT_STRING_TABNAME, tabnames.get(position));
+                bundle.putInt(SecondLayerFragment.INTENT_INT_POSITION, position);
+                mainFragment.setArguments(bundle);
+                return mainFragment;
+            }else if(position ==1) {
+                SecondLayerFragment1 mainFragment1 = new SecondLayerFragment1();
+                Bundle bundle = new Bundle();
+                bundle.putString(SecondLayerFragment1.INTENT_STRING_TABNAME, tabnames.get(position));
+                bundle.putInt(SecondLayerFragment1.INTENT_INT_POSITION, position);
+                mainFragment1.setArguments(bundle);
+                return mainFragment1;
+            }
+            else{
+                SecondLayerFragment mainFragment = new SecondLayerFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString(SecondLayerFragment.INTENT_STRING_TABNAME, tabnames.get(position));
+                bundle.putInt(SecondLayerFragment.INTENT_INT_POSITION, position);
+                mainFragment.setArguments(bundle);
+                return mainFragment;
+            }
+
         }
     }
 
