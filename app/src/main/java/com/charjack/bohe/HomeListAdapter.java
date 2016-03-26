@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.charjack.bohe.fragment.HomeListItemData;
+import com.charjack.bohe.vo.WebPassageInfo;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ import java.util.List;
 public class HomeListAdapter extends BaseAdapter{
 
     private Context ctx;
-    private List<HomeListItemData> list;
-    public HomeListAdapter(Context ctx,List<HomeListItemData> list){
+    private List<WebPassageInfo.PagerPassageInfo.PassageInfo> list;
+    public HomeListAdapter(Context ctx,List<WebPassageInfo.PagerPassageInfo.PassageInfo> list){
         this.ctx = ctx;
         this.list = list;
     }
@@ -57,16 +57,16 @@ public class HomeListAdapter extends BaseAdapter{
             convertview.setTag(vh);
         }
         vh = (ViewHolder) convertview.getTag();
-        vh.time_homelist_item.setText(list.get(position).getTimeAnddata());
+        vh.time_homelist_item.setText(String.valueOf(list.get(position).getCreated_at()));
         vh.image1_homelist_item.setImageResource(R.mipmap.demotest);
-        vh.text1_homelist_item.setText(list.get(position).getDescription1());
+        vh.text1_homelist_item.setText(list.get(position).getTitle());
         vh.islike1_homelist_item.setImageResource(R.mipmap.ic_feed_favourite_normal);
-        vh.zannum1_homelist_item.setText(list.get(position).getZannum1());
+        vh.zannum1_homelist_item.setText(String.valueOf(list.get(position).getLikes_count()));
 
         vh.image2_homelist_item.setImageResource(R.mipmap.demotest);
-        vh.text2_homelist_item.setText(list.get(position).getDescription2());
+        vh.text2_homelist_item.setText("extandlistview");
         vh.islike1_homelist_item.setImageResource(R.mipmap.ic_feed_favourite_normal);
-        vh.zannum2_homelist_item.setText(list.get(position).getZannum2());
+        vh.zannum2_homelist_item.setText("extandlistview");
         return convertview;
     }
 

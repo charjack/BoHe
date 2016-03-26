@@ -1,23 +1,18 @@
 package com.charjack.bohe.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.charjack.bohe.HomeListAdapter;
 import com.charjack.bohe.MainActivity;
 import com.charjack.bohe.R;
-import com.charjack.bohe.vo.PagerPassageInfo;
-import com.charjack.bohe.vo.PassageInfo;
 import com.charjack.bohe.vo.UrlContents;
 import com.charjack.bohe.vo.WebPassageInfo;
 import com.shizhefei.fragment.LazyFragment;
@@ -36,6 +31,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import com.charjack.bohe.vo.WebPassageInfo.PagerPassageInfo;
+import com.charjack.bohe.vo.WebPassageInfo.PagerPassageInfo.PassageInfo;
 
 public class SecondLayerFragment extends LazyFragment {
 	public static final String INTENT_STRING_TABNAME = "intent_String_tabName";
@@ -43,15 +40,13 @@ public class SecondLayerFragment extends LazyFragment {
 	private String tabName;
 	private int position;
 	private TextView textView;
-	private List<HomeListItemData> list = new ArrayList<>();
-	private HomeListItemData listitem;
 	private HomeListAdapter mHomeListAdapter;
 	public ListView listView;
 	public PtrClassicFrameLayout mPtrLayout;
 	public MainActivity mainActivity;
 	private TextView mPtrText;
-
-	private ArrayList<PagerPassageInfo> passageInfos= new ArrayList<PagerPassageInfo>();
+	public static String nexturlhome = UrlContents.SITEURL+UrlContents.HOMECONTENTURL;
+	private List<PassageInfo> passageInfos= new ArrayList<PassageInfo>();
 	private PagerPassageInfo pagerPassageInfo;
 	private WebPassageInfo webPassageInfo;
 	private final OkHttpClient client = new OkHttpClient();
@@ -73,8 +68,11 @@ public class SecondLayerFragment extends LazyFragment {
 		listView = (ListView) findViewById(R.id.fm_first_all_listView);
 		mPtrLayout = (PtrClassicFrameLayout) findViewById(R.id.fm_first_all_ptrLayout);
 
-		initdata();
-		mHomeListAdapter = new HomeListAdapter(mainActivity,list);
+
+		pagerPassageInfo = new PagerPassageInfo(new ArrayList<PassageInfo>());
+		webPassageInfo = new WebPassageInfo(pagerPassageInfo);
+
+		mHomeListAdapter = new HomeListAdapter(mainActivity,pagerPassageInfo.getItems());
 		listView.setAdapter(mHomeListAdapter);
 
 		LayoutInflater inflater = LayoutInflater.from(mainActivity);
@@ -110,28 +108,12 @@ public class SecondLayerFragment extends LazyFragment {
 				mPtrLayout.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						loadData();
-
+						getInfofromNetwork();
 					}
 				}, 100);
 			}
 		});
 	}
-
-	private void initdata() {
-		for(int i=0;i<10;i++){
-			list.add(new HomeListItemData());
-		}
-	}
-
-	private void loadData() {
-		for(int i=0;i<10;i++){
-			list.add(new HomeListItemData());
-		}
-		mHomeListAdapter.notifyDataSetChanged();
-		mPtrLayout.refreshComplete();//表示刷新完成
-	}
-
 
 	public Handler handler = new Handler(){
 		@Override
@@ -140,6 +122,7 @@ public class SecondLayerFragment extends LazyFragment {
 			switch(msg.what){
 				case 1:
 					mHomeListAdapter.notifyDataSetChanged();
+					mPtrLayout.refreshComplete();//表示刷新完成
 					break;
 			}
 		}
@@ -150,12 +133,11 @@ public class SecondLayerFragment extends LazyFragment {
 	public SecondLayerFragment(){mThreadPool= Executors.newSingleThreadExecutor();}
 
 	public void getInfofromNetwork() {
-		final String urlhome = UrlContents.SITEURL+UrlContents.HOMECONTENTURL;
-		System.out.println(urlhome);
+		System.out.println(nexturlhome);
 		mThreadPool.execute(new Runnable() {
 			@Override
 			public void run() {
-				Request request = new Request.Builder().url(urlhome).build();
+				Request request = new Request.Builder().url(nexturlhome).build();
 				//android.os.NetworkOnMainThreadException 如果在主线程中执行的话会报这个异常
 				//所以要想办法放到子线程执行
 				try {
@@ -164,10 +146,12 @@ public class SecondLayerFragment extends LazyFragment {
 						System.out.println("网络下载成功");
 //                        System.out.println(response.body().string());
 						//response.body().string()这个是存在缓存中数据，只能使用一次，如果之前打印使用一次，后面就会出错。
+						//当实体类有其它构造函数时，必须实现一个空的构造函数，否则会报default constructor not found错误
 						WebPassageInfo webpassageInfo = JSONObject.parseObject(response.body().string(), WebPassageInfo.class);
-//                      System.out.println(webpassageInfo.toString());
+                     // 	ContentJSONFormatSample contents = JSONObject.parseObject(response.body().string(), ContentJSONFormatSample.class);
 						webPassageInfo.getData().getItems().addAll(webpassageInfo.getData().getItems());
 						//discoveryAdapter.notifyDataSetChanged();
+						nexturlhome = webpassageInfo.getData().getPaging().getNext_url();
 						Message msg = handler.obtainMessage(1, "success");
 						msg.sendToTarget();
 					}
@@ -178,8 +162,6 @@ public class SecondLayerFragment extends LazyFragment {
 			}
 		});
 	}
-
-
 
 
 	@Override
